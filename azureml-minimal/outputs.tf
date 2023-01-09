@@ -15,10 +15,10 @@ output "resource-group-location" {
 
 # output for the AzureML workspace
 output "azureml-workpsace-name" {
-  value = "${local.prefix}-${local.azureml.cluster_name}-mlw"
+  value = azurerm_machine_learning_workspace.ws.name
 }
 output "azureml-compute-cluster-name" {
-  value = "${local.prefix}-${local.azureml.cluster_name}"
+  value = azurerm_machine_learning_compute_cluster.cluster.name
 }
 
 # output for the Blob Storage Container
@@ -27,11 +27,11 @@ output "blobstorage-container-path" {
   description = "The Azure Blob Storage Container path for storing your artifacts"
 }
 output "storage-account-name" {
-  value       = "${local.prefix}${local.blob_storage.account_name}"
+  value       = azurerm_storage_account.account.name
   description = "The name of the Azure Blob Storage account name"
 }
 output "storage-account-connection-string" {
-  value       = azurerm_storage_account.zenml-account.primary_connection_string
+  value       = azurerm_storage_account.account.primary_connection_string
   sensitive   = true
   description = "The Azure Blob Storage account connection string"
 }
@@ -43,7 +43,7 @@ output "key-vault-name" {
 
 # outputs for the MLflow tracking server
 output "mlflow-tracking-URL" {
-  value = "https://${azurerm_resource_group.rg.location}.api.azureml.ms/mlflow/v1.0/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${azurerm_resource_group.rg.name}/providers/Microsoft.MachineLearningServices/workspaces/${local.prefix}-${local.azureml.cluster_name}-mlw"
+  value = "https://${azurerm_resource_group.rg.location}.api.azureml.ms/mlflow/v1.0/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${azurerm_resource_group.rg.name}/providers/Microsoft.MachineLearningServices/workspaces/${local.prefix}-${local.azureml.name}-ws"
 }
 
 output "service-principal-id" {
