@@ -1,6 +1,6 @@
 
 # workspace storage account
-resource "azurerm_storage_account" "zenml-account" {
+resource "azurerm_storage_account" "account" {
   name                     = "${local.prefix}${local.blob_storage.account_name}"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
@@ -13,6 +13,6 @@ resource "azurerm_storage_account" "zenml-account" {
 # workspace storage container
 resource "azurerm_storage_container" "artifact-store" {
   name                  = "${local.prefix}-${local.blob_storage.container_name}"
-  storage_account_name  = azurerm_storage_account.zenml-account.name
+  storage_account_name  = azurerm_storage_account.account.name
   container_access_type = "private"
 }
