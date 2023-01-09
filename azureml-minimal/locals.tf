@@ -1,31 +1,33 @@
 # config values to use across the module
 locals {
-  prefix = "demo"
-  region = "uksouth"
+  prefix = "azmlopsmvp"
+  region = "westeurope"
 
   resource_group = {
-    name     = "zenml"
-    location = "uksouth"
+    name     = "rg"
+    location = local.region
   }
 
   azureml = {
-    cluster_name = "zenml-terraform-cluster"
+    name = "azureml"
   }
+
   vpc = {
-    name = "zenmlvpc"
+    name = "vpc"
   }
 
   blob_storage = {
-    account_name   = "zenmlaccount"
-    container_name = "zenmlartifactstore"
+    account_name   = "account"
+    container_name = "artifactstore"
   }
 
   key_vault = {
-    name = "zenmlsecrets"
+    name = "secrets"
   }
 
   tags = {
-    "managedBy"   = "terraform"
-    "application" = local.prefix
+    "managed-by"   = "terraform"
+    "project" = local.prefix
+    "environemnt" = "dev"
   }
 }
