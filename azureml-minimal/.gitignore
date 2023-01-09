@@ -5,3 +5,5 @@
 *.tfstate
 kubeconfig_*
 .terraform
+*.json
+*.zen
