@@ -15,8 +15,18 @@ Keep in mind, this is a basic setup to get you up and running on Azure with a mi
 
 ## Prerequisites
 
-- You must have a Azure account where you have sufficient permissions to create and destroy resources that will be created as part of this recipe. Supply the name of your project in the `locals.tf` file.
-- Have [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli#install-terraform) and [Helm](https://helm.sh/docs/intro/install/#from-script) installed on your system.
+- Have the following installed on your system
+  - [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli#install-terraform)
+  - [Helm](https://helm.sh/docs/intro/install/#from-script)
+  - Azure CLI
+- You must have a Azure account where you have sufficient permissions to create and destroy resources that will be created as part of this recipe. This means:
+  1. get an Azure account
+  2. upgrade to "pay-as-you-go" billing (the free tier is not eligible for Azure ML services)
+  3. restart your browser (only then Azure recognizes you upgraded)
+  4. go to the Azure portal, copy your account subscription ID
+  5. open your terminal, run `az login`
+  6. run `az account set --subscription $AZ_SUBCRIPTION_ID` (substitute with your subscription ID that you just copied)
+- Now, open the `locals.tf` file and add your project name as the "prefix" variable. Some resources need to be named uniquely on a global scale, so if things fail, try a different prefix.
 
 ## 🍏 Inputs
 
@@ -31,7 +41,7 @@ Before starting, you should know the values that you have to keep ready for use 
 > **Warning**
 > The CIDR block used for the VPC (inside the vpc.tf file) needs to be unique too, preferably. For example, if `10.10.0.0/16` is already under use by some VPC in your account, you can use `10.11.0.0/16` instead. However, this is not required.
 
-## 🧑‍🍳 Cooking the recipe
+## 🧑‍🍳 Cooking the recipe (currently broken, check "Using the recipes without the ZenML CLI below")
 
 It is not neccessary to use the MLOps stacks recipes presented here alongisde the
 [ZenML](https://github.com/zenml-io/zenml) framework. You can simply use the Terraform scripts
@@ -67,10 +77,6 @@ However, ZenML works seamlessly with the infrastructure provisioned through thes
     zenml stack set <STACK-NAME>
     ```
 
-> **Note**
->
-> You need to have your local `az` client logged in. Run `az login` if not done already.
-
 ### Configuring your secrets
 
 To make the imported ZenML stack work, you'll have to create secrets that some stack components need. If you inspect the generated YAML file, you can figure out that three secrets should be created:
@@ -82,13 +88,11 @@ To make the imported ZenML stack work, you'll have to create secrets that some s
 
         ```
         terraform output storage-account-name
-
-        terraform output storage-account-key
         ```
   - Now, register your ZenML secret.
 
         ```
-        zenml secrets-manager secret register azureml-storage-secret --schema=azure --account_name=<ACCOUNT_NAME> --account_key=<ACCOUNT_KEY>
+        zenml secrets-manager register azureml-storage-secret -f=azure --key_vault_name=<ACCOUNT_NAME>
         ```
 
 If you face a `ClientAuthorizationError` or `HTTPRequestError-(Forbidden)` while trying to create secrets, add the relevant permissions to your account using the following command.
@@ -219,7 +223,7 @@ Create stack to run on Azure
 
 > **_NOTE:_**: The recommended approach to register all the resources we deployed here, as a ZenML stack is to import the generated YAML file. However, since we are fetching the token after registration, we have to now update our experiment tracking stack component to include it.
 
-```shell
+```bash
 # zenml setup
 export STACK_PROFILE="azureml-mlflow"
 
