@@ -21,7 +21,7 @@ resource "local_file" "stack_file" {
         id: ${uuid()}
         flavor: azureml
         name: azureml_step_operator
-        configuration: {"subscription_id": "${data.azurerm_client_config.current.subscription_id}", "resource_group": "${azurerm_resource_group.rg.name}", "workspace_name": "${azurerm_machine_learning_workspace.mlw.name}", "compute_target_name": "${azurerm_machine_learning_compute_cluster.cluster.name}"}
+        configuration: {"subscription_id": "${data.azurerm_client_config.current.subscription_id}", "resource_group": "${azurerm_resource_group.rg.name}", "workspace_name": "${azurerm_machine_learning_workspace.ws.name}", "compute_target_name": "${azurerm_machine_learning_compute_cluster.cluster.name}"}
       secrets_manager:
         id: ${uuid()}
         flavor: azure
@@ -31,7 +31,7 @@ resource "local_file" "stack_file" {
         id: ${uuid()}
         flavor: mlflow
         name: azureml_mlflow_experiment_tracker
-        configuration: {"tracking_uri": "https://${azurerm_resource_group.rg.location}.api.azureml.ms/mlflow/v1.0/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${azurerm_resource_group.rg.name}/providers/Microsoft.MachineLearningServices/workspaces/${local.prefix}-${local.azureml.cluster_name}-mlw", "tracking_token": "REPLACE_ME"}
+        configuration: {"tracking_uri": "https://${azurerm_resource_group.rg.location}.api.azureml.ms/mlflow/v1.0/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${azurerm_resource_group.rg.name}/providers/Microsoft.MachineLearningServices/workspaces/${local.prefix}-${local.azureml.name}-ws", "tracking_token": "REPLACE_ME"}
     ADD
   filename = "./azureml_minimal_stack_${replace(substr(timestamp(), 0, 16), ":", "_")}.yaml"
 }
