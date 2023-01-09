@@ -1,5 +1,5 @@
 resource "azuread_application" "app" {
-  display_name = "azure-zenml-app"
+  display_name = "${local.prefix}-app"
 }
 
 resource "azuread_service_principal" "sp" {
